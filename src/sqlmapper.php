@@ -27,5 +27,8 @@ class SqlMapper extends \DB\SQL\Mapper
 
 class FieldInvalidException extends Exception
 {
+}
 
+class FieldNotExistsException extends Exception
+{
 }

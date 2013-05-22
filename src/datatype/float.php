@@ -2,10 +2,10 @@
 
 namespace datatype;
 
-class Integer extends DataType
+class Float extends DataType
 {
   public function validate($value)
   {
-    return is_int($value);
+    return is_float($value);
   }
 }

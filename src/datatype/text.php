@@ -2,10 +2,10 @@
 
 namespace datatype;
 
-class Integer extends DataType
+class Text extends DataType
 {
   public function validate($value)
   {
-    return is_int($value);
+    return is_string($value); 
   }
 }
