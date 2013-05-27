@@ -1,5 +1,8 @@
 <?php
 
+/**
+ *
+ */
 class SqlMapper extends \DB\SQL\Mapper
 {
   protected $properties;
@@ -22,11 +25,6 @@ class SqlMapper extends \DB\SQL\Mapper
       throw new FieldInvalidException("'$value' is not allowed for field '$key'");
 
     parent::__set($key, $value);
-  }
-
-  public function __get($key)
-  {
-    return parent::__get($key);
   }
 }
 
