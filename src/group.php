@@ -18,6 +18,4 @@ class Group extends SqlMapper
       ),
     );
   }
-
-
 }

@@ -31,4 +31,3 @@ foreach ($test->results() as $result) {
     echo 'Fail ('.$result['source'].')';
   echo "\n";
 }
-

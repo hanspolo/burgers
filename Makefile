@@ -4,6 +4,7 @@ all:
 test: all
 	php test/sqlmapper.php
 	php test/user.php
+	php test/group.php
 	php test/acl.php
 	php test/module.php
 
