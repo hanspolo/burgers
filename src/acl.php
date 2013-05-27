@@ -48,15 +48,14 @@ class ACL extends SQLMapper
    *
    *  @throws ActionNotFoundException
    */
-  public static function check($groupId, $action, $rule)
+  public function check($groupId, $action, $rule)
   {
-    $acl = new \model\ACL();
-    $acl->load(array("groupId = ? AND action = ?", $groupId, $action);
+    $this->load(array("groupId = ? AND action = ?", $groupId, $action));
 
-    if ($acl->dry())
+    if ($this->dry())
       throw new ActionNotFoundException("'$action' is not in the ACL Database.");
 
-    return $acl->right | $rule > 0;
+     return ($this->right & $rule) > 0;
   }
 }
 

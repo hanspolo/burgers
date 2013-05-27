@@ -15,7 +15,7 @@ $user->email = "hanspolo@github.io";
 $user->save();
 
 $test->expect($user->_id > 0, "User was saved");
-
+ 
 $test->expect($user->checkLogin("hanspolo@github.io", "abc"), "Password can be verified");
 $test->expect(!$user->checkLogin("hanspolo@github.io", "jklö"), "Wrong Password detected");
 $test->expect(!$user->checkLogin("karl@bavaria.de", "abc"), "Wrong Email detected");
@@ -31,3 +31,4 @@ foreach ($test->results() as $result) {
     echo 'Fail ('.$result['source'].')';
   echo "\n";
 }
+

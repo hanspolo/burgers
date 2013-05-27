@@ -42,6 +42,14 @@ class Module
 
 }
 
+/**
+ *
+ */
+abstract class AbstractModule
+{
+  abstract public function execute();
+}
+
 
 class ModuleNotFoundException extends Exception
 {

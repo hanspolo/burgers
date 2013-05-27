@@ -4,6 +4,8 @@ all:
 test: all
 	php test/sqlmapper.php
 	php test/user.php
+	php test/acl.php
+	php test/module.php
 
 clean:
 	rm lib/acl.php

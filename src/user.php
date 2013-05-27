@@ -16,11 +16,11 @@ class User extends SqlMapper
       "id" => array(
         "type" => "Integer",
       ),
-      "name" => array(
-        "type" => "Text",
-      ),
       "groupId" => array(
         "type" => "Integer",
+      ),
+      "name" => array(
+        "type" => "Text",
       ),
       "email" => array(
         "type" => "Email",
