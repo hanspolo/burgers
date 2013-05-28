@@ -6,7 +6,12 @@ define("ACL_EDIT", 4);
 define("ACL_DELETE", 8);
 
 /**
+ *  Access Controll List for authorization by group
  *
+ *  @author Hanspolo <ph.hanspolo@googlemail.com>
+ *  @copyright 2013 Hanspolo
+ *  @license https://gnu.org/licenses/gpl.html GNU Public License
+ *  @version 0.1
  */
 class ACL extends SQLMapper
 {
