@@ -8,7 +8,7 @@ $instance = new ACL(new DB\SQL("sqlite:/tmp/test.sqlite"));
 $acl = new ACL(new DB\SQL("sqlite:/tmp/test.sqlite"));
 
 $instance->action = "Node";
-$instance->right = ACL_READ + ACL_EDIT;
+$instance->rule = ACL_READ + ACL_EDIT;
 $instance->groupId = 1;
 
 $instance->save();

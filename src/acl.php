@@ -29,7 +29,7 @@ class ACL extends SQLMapper
       "action" => array(
         "type" => "Text",
       ),
-      "right" => array(
+      "rule" => array(
         "type" => "Integer",
       ),
       "groupId" => array(
@@ -43,7 +43,7 @@ class ACL extends SQLMapper
    *
    *  @param Integer $groupId
    *  @param String $action
-   *  @param Integer $right
+   *  @param Integer $rule
    *    ACL_READ
    *    ACL_CREATE
    *    ACL_EDIT
@@ -53,14 +53,14 @@ class ACL extends SQLMapper
    *
    *  @throws ActionNotFoundException
    */
-  public function check($groupId, $action, $right)
+  public function check($groupId, $action, $rule)
   {
     $this->load(array("groupId = ? AND action = ?", $groupId, $action));
 
     if ($this->dry())
       throw new ActionNotFoundException("'$action' is not in the ACL Database.");
 
-     return ($this->right & $right) > 0;
+     return ($this->rule & $rule) > 0;
   }
 }
 
