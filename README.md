@@ -70,6 +70,8 @@ class MyModel extends SqlMapper
 
 SqlMapper extends the DB\SQL\Mapper class from F3.
 
+*Warning!* You can't use properties as a field for your model.
+
 ### Users and Authorization
 User, Group and ACL all extend the SqlMapper class.
 So you can use them to create, read, edit and delete them.
