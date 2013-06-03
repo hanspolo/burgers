@@ -31,6 +31,17 @@ class SqlMapper extends \DB\SQL\Mapper
 
     parent::__set($key, $value);
   }
+
+  /**
+   *  @see \DB\SQL\Mapper::__get($key)
+   */
+  public function __get($key)
+  {
+    if ($key === "properties")
+      return $this->properties;
+
+    return parent::__get($key);
+  }
 }
 
 class FieldInvalidException extends Exception
