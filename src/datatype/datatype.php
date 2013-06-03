@@ -24,12 +24,13 @@ abstract class DataType
   /**
    *  Renders the form output
    *
+   *  @param String $name
    *  @param Mixed $value
    *    Sets a default value to the form element
    *
    *  @return String
    */
-  public function renderForm($value = null)
+  public function renderForm($name, $value = null)
   {
     return "";
   }
