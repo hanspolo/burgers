@@ -12,7 +12,7 @@ class Boolean extends DataType
   /**
    *  @see \datatype\DateType::renderForm($name, $value)
    */
-  public function renderForm($name, $value = null)
+  public function renderForm($name, $value = null, $error = false)
   { 
     $f3 = \Base::instance();
 

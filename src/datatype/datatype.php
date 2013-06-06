@@ -27,10 +27,12 @@ abstract class DataType
    *  @param String $name
    *  @param Mixed $value
    *    Sets a default value to the form element
+   *  @param Boolean $error
+   *    Set to true to mark the value as invalid
    *
    *  @return String
    */
-  public function renderForm($name, $value = null)
+  public function renderForm($name, $value = null, $error = false)
   {
     return "";
   }

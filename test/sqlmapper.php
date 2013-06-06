@@ -12,6 +12,9 @@ class MyTestSqlMapper extends SqlMapper
       "mybool" => array(
         "type" => "Boolean",
       ),
+      "mycolor" => array(
+        "type" => "Color",
+      ),
       "myemail" => array(
         "type" => "Email",
       ),
@@ -68,6 +71,55 @@ try {
 /**
  *  Color
  */
+try {
+  $instance->mycolor = "#000";
+  $test->expect(true, "Can set #000 to a color field");
+} catch (Exception $e) {
+  echo $e->getTraceAsString();
+  $test->expect(false, "Can set #000 to a color field");
+}
+
+try {
+  $instance->mycolor = "#0F1AB6";
+  $test->expect(true, "Can set #0F1AB6 to a color field");
+} catch (Exception $e) {
+  $test->expect(false, "Can set #0F1AB6 to a color field");
+}
+
+try {
+  $instance->mycolor = "#0f1ab6";
+  $test->expect(true, "Can set #0f1ab6 to a color field");
+} catch (Exception $e) {
+  $test->expect(false, "Can set #0f1ab6 to a color field");
+}
+
+try {
+  $instance->mycolor = "0F1AB6";
+  $test->expect(true, "Can set 0F1AB6 to a color field");
+} catch (Exception $e) {
+  $test->expect(false, "Can set 0F1AB6 to a color field");
+}
+
+try {
+  $instance->mycolor = "Hallo Welt!";
+  $test->expect(false, "Can't set 'Hallo Welt!' to a color field");
+} catch (Exception $e) {
+  $test->expect(true, "Can't set 'Hallo Welt!' to a color field");
+}
+
+try {
+  $instance->mycolor = 1;
+  $test->expect(false, "Can't set 1 to a color field");
+} catch (Exception $e) {
+  $test->expect(true, "Can't set 1 to a color field");
+}
+
+try {
+  $instance->mycolor = "#00FAG8";
+  $test->expect(false, "Can't set #00FAG8 to a color field");
+} catch (Exception $e) {
+  $test->expect(true, "Can't set #00FAG8 to a color field");
+}
 
 /**
  *  Date

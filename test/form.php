@@ -12,6 +12,9 @@ class MyTestSqlMapper extends SqlMapper
       "mybool" => array(
         "type" => "Boolean",
       ),
+      "mycolor" => array(
+        "type" => "Color",
+      ),
       "myemail" => array(
         "type" => "Email",
       ),
