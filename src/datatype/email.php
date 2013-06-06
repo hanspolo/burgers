@@ -4,7 +4,7 @@ namespace datatype;
 
 class Email extends DataType
 {
-  public function validate($value)
+  public function validate($value, $options = array())
   {
     return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
   }
@@ -12,7 +12,7 @@ class Email extends DataType
   /**
    *  @see \datatype\DateType::renderForm($name, $value)
    */
-  public function renderForm($name, $value = null, $error = false)
+  public function renderForm($name, $value = null, $error = false, $options = array())
   { 
     $f3 = \Base::instance();
 

@@ -4,7 +4,7 @@ namespace datatype;
 
 class Color extends DataType
 {
-  public function validate($value)
+  public function validate($value, $options = array())
   {
     $valid = !is_null($value);
     $valid &= preg_match("/\b\#?(([a-fA-F0-9]{3}){1,2})\b/", $value) === 1;
@@ -15,7 +15,7 @@ class Color extends DataType
   /**
    *  @see \datatype\DateType::renderForm($name, $value)
    */
-  public function renderForm($name, $value = null, $error = false)
+  public function renderForm($name, $value = null, $error = false, $options = array())
   { 
     $f3 = \Base::instance();
 

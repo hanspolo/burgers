@@ -4,7 +4,7 @@ namespace datatype;
 
 class Numeric extends DataType
 {
-  public function validate($value)
+  public function validate($value, $options = array())
   {
     return false; 
   }
@@ -12,7 +12,7 @@ class Numeric extends DataType
   /**
    *  @see \datatype\DateType::renderForm($name, $value)
    */
-  public function renderForm($name, $value = null, $error = false)
+  public function renderForm($name, $value = null, $error = false, $options = array())
   { 
     $f3 = \Base::instance();
 

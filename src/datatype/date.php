@@ -4,7 +4,7 @@ namespace datatype;
 
 class Date extends DataType
 {
-  public function validate($value)
+  public function validate($value, $options = array())
   {
     return strtotime($value) > 0;
   }
@@ -12,7 +12,7 @@ class Date extends DataType
   /**
    *  @see \datatype\DateType::renderForm($name, $value)
    */
-  public function renderForm($name, $value = null, $error = false)
+  public function renderForm($name, $value = null, $error = false, $options = array())
   { 
     $f3 = \Base::instance();
 

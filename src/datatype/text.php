@@ -4,7 +4,7 @@ namespace datatype;
 
 class Text extends DataType
 {
-  public function validate($value)
+  public function validate($value, $options = array())
   {
     return is_string($value); 
   }
@@ -12,7 +12,7 @@ class Text extends DataType
   /**
    *  @see \datatype\DateType::renderForm($name, $value)
    */
-  public function renderForm($name, $value = null, $error = false)
+  public function renderForm($name, $value = null, $error = false, $options = array())
   { 
     $f3 = \Base::instance();
 

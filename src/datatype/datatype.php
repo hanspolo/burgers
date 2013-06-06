@@ -16,10 +16,11 @@ abstract class DataType
    *  Checks the value with datatype specific validations
    *
    *  @param Mixed $value
+   *  @param Array $options
    *
    *  @return Boolean
    */
-  abstract public function validate($value);
+  abstract public function validate($value, $options = array());
 
   /**
    *  Renders the form output
@@ -32,7 +33,7 @@ abstract class DataType
    *
    *  @return String
    */
-  public function renderForm($name, $value = null, $error = false)
+  public function renderForm($name, $value = null, $error = false, $options = array())
   {
     return "";
   }
