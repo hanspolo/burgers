@@ -132,7 +132,23 @@ class MyModule extends AbstractModule
 ```
 
 ### Form generation
-Coming soon...
+The form class will give you some easy-to-use tools to get data into the system.
+It takes over the creation of the form, the validation of the data sent by this form and saving it into the database.
+
+Here is how to use the form generation:
+
+```php
+$form = new Form($object);
+```
+
+$object is an instance of the SqlMapper class.
+
+To generate the form you simply use `$form->render()`.
+This will give you the html as string and you can print it or add it to your template.
+
+When the form is sent to the backend you will first validate it with `$form->validate($f3->get("POST"))`.
+If it fails it returns `FALSE` and adds a description of the failures to `$f3->get("form_errors")`.
+If not you can use `$form->save($f3->get("POST"))` to put write it to the database.
 
 ## Support and License
 
