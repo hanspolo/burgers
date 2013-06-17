@@ -72,7 +72,7 @@ class User extends SqlMapper
   function __set($key, $value)
   {
     if ($key == "password")
-      $value = Bcrypt::instance()->hash($value, $this->createSalt(), 16);
+      $value = Bcrypt::instance()->hash($value, $this->createSalt(), 14);
 
     parent::__set($key, $value);  
   }

@@ -15,6 +15,7 @@ $user->email = "hanspolo@github.io";
 $user->save();
 
 $test->expect($user->_id > 0, "User was saved");
+$user->load(array("id = ?", $user->_id));
  
 $test->expect($user->checkLogin("hanspolo@github.io", "abc"), "Password can be verified");
 $test->expect(!$user->checkLogin("hanspolo@github.io", "jklö"), "Wrong Password detected");

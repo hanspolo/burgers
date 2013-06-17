@@ -51,15 +51,13 @@ try {
 //
 // Validate the form
 //
-$errors = array();
-$test->expect($form->validate(array("mybool" => true, "mycolor" => "#FFFFFF", "myemail" => "test@abc.de", "myfloat" => 1.0, "myint" => 1, "mynumeric" => 1, "mytext" => "Hello World!"), $errors), "No errors with valid data.");
-
 try {
-  $errors = array();
-  $test->expect(!$form->validate(array("mybool" => "Hello World!", "mycolor" => "#FFFFFF", "myemail" => "test@abc.de", "myfloat" => 1.0, "myint" => 1, "mynumeric" => 1, "mytext" => true), $errors), "Errors with wrong boolean and wrong text. " . print_r($errors, true));
+  $test->expect(!$form->validate(array("mybool" => "Hello World!", "mycolor" => "#FFFFFF", "myemail" => "test@abc.de", "myfloat" => 1.0, "myint" => 1, "mynumeric" => 1, "mytext" => true)), "Errors with wrong boolean and wrong text. " . print_r($f3->get("form_errors"), true));
 } catch (Exception $e) {
   $test->expect(false, "Errors with wrong boolean and wrong text. Exception: " . $e->getMessage());
 }
+
+$test->expect($form->validate(array("mybool" => true, "mycolor" => "#FFFFFF", "myemail" => "test@abc.de", "myfloat" => 1.0, "myint" => 1, "mynumeric" => 1, "mytext" => "Hello World!")), "No errors with valid data.");
 
 //
 // Save the form

@@ -3,6 +3,7 @@ all:
 
 test: all
 	sqlite3 /tmp/test.sqlite < test/database.sql
+	sqlite3 /tmp/test.sqlite < database.sql
 	php test/sqlmapper.php
 	php test/user.php
 	php test/group.php

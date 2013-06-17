@@ -10,6 +10,8 @@ $group->name = "My Group";
 $group->save();
 
 $test->expect($group->_id > 0, "Group was saved");
+$group->load(array("id = ?", $group->_id));
+
 $test->expect($group->erase(), "Group was deleted");
 
 foreach ($test->results() as $result) {

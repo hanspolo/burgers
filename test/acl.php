@@ -14,6 +14,7 @@ $instance->groupId = 1;
 $instance->save();
 
 $test->expect($instance->_id > 0, "ACL was saved.");
+$instance->load(array("id = ?", $instance->_id));
 
 $test->expect($acl->check(1, "Node", ACL_READ), "Have the right to Read");
 $test->expect($acl->check(1, "Node", ACL_EDIT), "Have the right to Edit");
