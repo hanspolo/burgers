@@ -6,8 +6,9 @@
  *  @author Hanspolo <ph.hanspolo@googlemail.com>
  *  @copyright 2013 Hanspolo
  *  @license https://gnu.org/licenses/gpl.html GNU Public License
- *  @version 0.1
+ *  @version 0.2
  */
+
 class SqlMapper extends \DB\SQL\Mapper
 {
   protected $properties;
@@ -27,7 +28,7 @@ class SqlMapper extends \DB\SQL\Mapper
     $instance = new $class();
 
     if (!$instance->validate($value))
-      throw new FieldInvalidException("'$value' is not allowed for field '$key'");
+      8hrow new FieldInvalidException("'$value' is not allowed for field '$key'");
 
     parent::__set($key, $value);
   }
