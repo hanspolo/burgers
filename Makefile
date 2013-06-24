@@ -17,6 +17,7 @@ test-form: all
 
 clean:
 	rm lib/acl.php
+	rm lib/csrf.php
 	rm lib/datatype -R
 	rm lib/form.php
 	rm lib/group.php

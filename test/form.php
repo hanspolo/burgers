@@ -51,13 +51,20 @@ try {
 //
 // Validate the form
 //
+$test->expect($form->validate(array("csrf_token" => $f3->get("SESSION.csrf_token"), "mybool" => true, "mycolor" => "#FFFFFF", "myemail" => "test@abc.de", "myfloat" => 1.0, "myint" => 1, "mynumeric" => 1, "mytext" => "Hello World!")), "No errors with valid data. " . print_r($f3->get("form_errors"), true));
+
 try {
-  $test->expect(!$form->validate(array("mybool" => "Hello World!", "mycolor" => "#FFFFFF", "myemail" => "test@abc.de", "myfloat" => 1.0, "myint" => 1, "mynumeric" => 1, "mytext" => true)), "Errors with wrong boolean and wrong text. " . print_r($f3->get("form_errors"), true));
+  $test->expect(!$form->validate(array("mybool" => "Hello World!", "mycolor" => "#FFFFFF", "myemail" => "test@abc.de", "myfloat" => 1.0, "myint" => 1, "mynumeric" => 1, "mytext" => true)), "Errors with wrong boolean and wrong text and missing csrf token. " . print_r($f3->get("form_errors"), true));
 } catch (Exception $e) {
-  $test->expect(false, "Errors with wrong boolean and wrong text. Exception: " . $e->getMessage());
+  $test->expect(false, "Errors with wrong boolean and wrong text and missing csrf token. Exception: " . $e->getMessage());
 }
 
-$test->expect($form->validate(array("mybool" => true, "mycolor" => "#FFFFFF", "myemail" => "test@abc.de", "myfloat" => 1.0, "myint" => 1, "mynumeric" => 1, "mytext" => "Hello World!")), "No errors with valid data.");
+try {
+  $test->expect(!$form->validate(array("csrf_token" => "abc", "mybool" => "Hello World!", "mycolor" => "#FFFFFF", "myemail" => "test@abc.de", "myfloat" => 1.0, "myint" => 1, "mynumeric" => 1, "mytext" => true)), "Errors with wrong boolean and wrong text and invalid csrf token. " . print_r($f3->get("form_errors"), true));
+} catch (Exception $e) {
+  $test->expect(false, "Errors with wrong boolean and wrong text and invalid csrf token. Exception: " . $e->getMessage());
+}
+
 
 //
 // Save the form

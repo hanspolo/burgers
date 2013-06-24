@@ -1,4 +1,5 @@
 lib/acl.php
+lib/csrf.php
 lib/datatype/*
 lib/form.php
 lib/group.php

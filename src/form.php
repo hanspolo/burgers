@@ -22,9 +22,13 @@ class Form
    */
   public function render()
   {
+    $f3 = Base::instance();
     $fields = $this->object->properties;
 
     $output = "";
+
+    $token  = CSRF::generateToken();
+    $output = "<input type=\"hidden\" name=\"csrf_token\" value=\"$token\" />";
 
     foreach ($fields as $name => $field)
     {
@@ -51,6 +55,15 @@ class Form
     $fields = $this->object->properties;
     $errors = array();
 
+    // CSRF Token valid?
+    $valid_token = array_key_exists("csrf_token", $data); 
+    $valid_token &= CSRF::validateToken($data["csrf_token"]);
+
+    if (!$valid_token)
+      $errors["csrf_token"] =
+        array_key_exists("csrf_token", $data) ? $data["csrf_token"] : null;
+
+    // Validate fields
     foreach ($fields as $name => $field)
     {
       $datatype = sprintf("datatype\\%s", $field["type"]);
@@ -89,7 +102,8 @@ class Form
 
 class FormInvalidException extends Exception
 {
-  public function __construct($msg = "Can not save a form that contains invalid data.")
+  public function __construct(
+    $msg = "Can not save a form that contains invalid data.")
   {
     parent::__construct($msg);
   }
