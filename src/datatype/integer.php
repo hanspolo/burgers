@@ -6,7 +6,9 @@ class Integer extends DataType
 {
   public function validate($value, $options = array())
   {
-    return is_int($value);
+    $valid = is_numeric($value);
+    $valid &= preg_match("/\b[0-9]+\b/", $value) === 1;
+    return $value;
   }
 
   /**

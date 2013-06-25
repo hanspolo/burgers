@@ -14,6 +14,16 @@ class SqlMapper extends \DB\SQL\Mapper
   protected $properties;
 
   /**
+   *  @see \DB\SQL\Mapper::__construct($db, $table, $ttl)
+   */
+  public function __construct($db, $table, $ttl=60)
+  {
+    parent::__construct($db, $table, $ttl);
+
+    $this->properties = array();
+  }
+
+  /**
    *  @see \DB\SQL\Mapper::__set($key, $value)
    *
    *  @throws FieldNotExistException
