@@ -28,7 +28,7 @@ class SqlMapper extends \DB\SQL\Mapper
     $instance = new $class();
 
     if (!$instance->validate($value))
-      8hrow new FieldInvalidException("'$value' is not allowed for field '$key'");
+      throw new FieldInvalidException("'$value' is not allowed for field '$key'");
 
     parent::__set($key, $value);
   }
