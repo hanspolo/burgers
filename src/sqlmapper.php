@@ -37,7 +37,7 @@ class SqlMapper extends \DB\SQL\Mapper
     $class = sprintf("datatype\\%s", $this->properties[$key]["type"]);
     $instance = new $class();
 
-    if (!$instance->validate($value))
+    if (!$instance->validate($value, $this->properties[$key]))
       throw new FieldInvalidException("'$value' is not allowed for field '$key'");
 
     parent::__set($key, $value);

@@ -34,7 +34,7 @@ class Form
     {
       $datatype = sprintf("datatype\\%s", $field["type"]);
       $datatype = new $datatype();
-      $output .= $datatype->renderForm($name, $this->object->$name);
+      $output .= $datatype->renderForm($name, $this->object->$name, $f3->exists("form_errors.$name"), $field);
     }
 
     return $output;
@@ -56,12 +56,12 @@ class Form
     $errors = array();
 
     // CSRF Token valid?
-    $valid_token = array_key_exists("csrf_token", $data); 
-    $valid_token &= CSRF::validateToken($data["csrf_token"]);
+    $valid_token = array_key_exists("csrf_token", $data)
+                && CSRF::validateToken($data["csrf_token"]);
 
     if (!$valid_token)
       $errors["csrf_token"] =
-        array_key_exists("csrf_token", $data) ? $data["csrf_token"] : null;
+        array_key_exists("csrf_token", $data) ? $data["csrf_token"] : "";
 
     // Validate fields
     foreach ($fields as $name => $field)
@@ -69,7 +69,12 @@ class Form
       $datatype = sprintf("datatype\\%s", $field["type"]);
       $datatype = new $datatype();
 
-      if (!$datatype->validate($data[$name]))
+      $optional = array_key_exists("optional", $field) && $field["optional"];
+      $optional &= (!array_key_exists($name, $data) || $data[$name] === "");
+      if ($optional)
+        continue;
+
+      if (!$datatype->validate($data[$name], $field))
         $errors[$name] = $data[$name];
     }
   
@@ -93,7 +98,14 @@ class Form
       throw new FormInvalidException();
     
     foreach ($fields as $name => $field)
+    {
+      $optional = array_key_exists("optional", $field) && $field["optional"];
+      $optional &= (!array_key_exists($name, $data) || $data[$name] === "");
+      if ($optional)
+        continue;
+
       $this->object->$name = $data[$name];
+    }
 
     $this->object->save();
   }

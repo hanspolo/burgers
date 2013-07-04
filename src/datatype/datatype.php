@@ -31,6 +31,7 @@ abstract class DataType
    *    Sets a default value to the form element
    *  @param Boolean $error
    *    Set to true to mark the value as invalid
+   *  @param Array $options
    *
    *  @return String
    */

@@ -6,7 +6,11 @@ class Text extends DataType
 {
   public function validate($value, $options = array())
   {
-    return is_string($value); 
+    $valid = is_string($value); 
+    $valid &= (!array_key_exists("maxlength", $options) ||
+               strlen($value) >= $options["maxlength"]);
+
+    return $valid;
   }
 
   /**
@@ -20,6 +24,8 @@ class Text extends DataType
     $form .= $f3->exists("lng.$name") ? $f3->get("lng.$name") : $name;
     $form .= "</label>";
     $form .= "<input name=\"$name\" type=\"text\" value=\"$value\" ";
+    if (array_key_exists("maxlength", $options)) 
+      $form .= "maxlength=\"$options[maxlength]\" ";
     if ($error)  $form .= "class=\"error\" ";
     $form .= "/>";
 
