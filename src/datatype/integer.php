@@ -12,7 +12,7 @@ class Integer extends DataType
     $valid &= (!array_key_exists("min", $options) || $value >= $options["min"]);
     $valid &= (!array_key_exists("max", $options) || $value <= $options["max"]);
     
-    return $value;
+    return $valid;
   }
 
   /**
