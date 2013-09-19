@@ -19,7 +19,7 @@ final class Base {
 	//@{ Framework details
 	const
 		PACKAGE='Fat-Free Framework',
-		VERSION='3.0.8-Release';
+		VERSION='3.1.0-Release';
 	//@}
 
 	//@{ HTTP status codes (RFC 2616)
@@ -202,7 +202,7 @@ final class Base {
 		}
 		else switch ($key) {
 			case 'CACHE':
-				$val=Cache::instance()->load($val);
+				$val=Cache::instance()->load($val,TRUE);
 				break;
 			case 'ENCODING':
 				$val=ini_set('default_charset',$val);
@@ -611,7 +611,7 @@ final class Base {
 		setlocale(LC_ALL,$this->locales);
 		// Get formatting rules
 		$conv=localeconv();
-		$out=preg_replace_callback(
+		return preg_replace_callback(
 			'/\{(?P<pos>\d+)\s*(?:,\s*(?P<type>\w+)\s*'.
 			'(?:,(?P<mod>(?:\s*\w+(?:\s+\{.+?\}\s*,?)?)*))?)?\}/',
 			function($expr) use($args,$conv) {
@@ -676,9 +676,9 @@ final class Base {
 												$thousands_sep),
 												$currency_symbol),
 											$fmt[(int)(
-												(int)${$pre.'_cs_precedes'}.
-												(int)${$pre.'_sign_posn'}.
-												(int)${$pre.'_sep_by_space'}
+												(${$pre.'_cs_precedes'}%2).
+												(${$pre.'_sign_posn'}%5).
+												(${$pre.'_sep_by_space'}%3)
 											)]
 										);
 									case 'percent':
@@ -700,8 +700,6 @@ final class Base {
 			},
 			$val
 		);
-		return preg_match('/^win/i',PHP_OS)?
-			iconv('Windows-1252',$this->hive['ENCODING'],$out):$out;
 	}
 
 	/**
@@ -709,12 +707,7 @@ final class Base {
 	*	@return string
 	*	@param $code string
 	**/
-	function language($code=NULL) {
-		if (!$code) {
-			$headers=$this->hive['HEADERS'];
-			if (isset($headers['Accept-Language']))
-				$code=$headers['Accept-Language'];
-		}
+	function language($code) {
 		$code=str_replace('-','_',preg_replace('/;q=.+?(?=,|$)/','',$code));
 		$code.=($code?',':'').$this->fallback;
 		$this->languages=array();
@@ -737,7 +730,7 @@ final class Base {
 				$parts=explode('_',$locale);
 				$locale=@constant('ISO::LC_'.$parts[0]);
 				if (isset($parts[1]) &&
-					$country=@constant('ISO::CC_'.$parts[1]))
+					$country=@constant('ISO::CC_'.strtolower($parts[1])))
 					$locale.='_'.$country;
 			}
 			$this->locales[]=$locale;
@@ -770,8 +763,8 @@ final class Base {
 					foreach ($matches as $match)
 						if (isset($match[1]) &&
 							!array_key_exists($match[1],$lex))
-							$lex[$match[1]]=preg_replace(
-								'/\\\\\h*\r?\n/','',$match[2]);
+							$lex[$match[1]]=trim(preg_replace(
+								'/(?<!\\\\)"|\\\\\h*\r?\n/','',$match[2]));
 			}
 		}
 		return $lex;
@@ -786,8 +779,6 @@ final class Base {
 		switch (strtolower($this->hive['SERIALIZER'])) {
 			case 'igbinary':
 				return igbinary_serialize($arg);
-			case 'json':
-				return json_encode($arg);
 			default:
 				return serialize($arg);
 		}
@@ -802,8 +793,6 @@ final class Base {
 		switch (strtolower($this->hive['SERIALIZER'])) {
 			case 'igbinary':
 				return igbinary_unserialize($arg);
-			case 'json':
-				return json_decode($arg);
 			default:
 				return unserialize($arg);
 		}
@@ -899,10 +888,11 @@ final class Base {
 			'text'=>$text,
 			'trace'=>$trace
 		);
-		if (ob_get_level())
+		if (!$debug && ob_get_level())
 			ob_end_clean();
-		if ((!$this->hive['ONERROR'] ||
-			$this->call($this->hive['ONERROR'],$this)===FALSE) &&
+		$handler=$this->hive['ONERROR'];
+		$this->hive['ONERROR']=NULL;
+		if ((!$handler || $this->call($handler,$this)===FALSE) &&
 			!$prior && PHP_SAPI!='cli' && !$this->hive['QUIET'])
 			echo $this->hive['AJAX']?
 				json_encode($this->hive['ERROR']):
@@ -1126,7 +1116,7 @@ final class Base {
 						list($headers,$body)=$data;
 						if (PHP_SAPI!='cli')
 							array_walk($headers,'header');
-						$this->expire($cached+$ttl-$now);
+						$this->expire($cached[0]+$ttl-$now);
 					}
 					else
 						// Expire HTTP client-cached page
@@ -1285,8 +1275,7 @@ final class Base {
 								return $val+0;
 							if (preg_match('/^\w+$/i',$val) && defined($val))
 								return constant($val);
-							return preg_replace(
-								'/\\\\\h*\r?\n/','',$val);
+							return preg_replace('/\\\\\h*\r?\n/','',$val);
 						},
 						// Mark quoted strings with 0x00 whitespace
 						str_getcsv(preg_replace(
@@ -1472,7 +1461,7 @@ final class Base {
 		$scheme=isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on' ||
 			isset($headers['X-Forwarded-Proto']) &&
 			$headers['X-Forwarded-Proto']=='https'?'https':'http';
-		$base=preg_replace('/\/[^\/]+$/','',$_SERVER['PHP_SELF']);
+		$base=preg_replace('/\/[^\/]+$/','',$_SERVER['SCRIPT_NAME']);
 		call_user_func_array('session_set_cookie_params',
 			$jar=array(
 				'expire'=>0,
@@ -1484,6 +1473,12 @@ final class Base {
 				'httponly'=>TRUE
 			)
 		);
+		if (function_exists('apache_setenv')) {
+			// Work around Apache pre-2.4 VirtualDocumentRoot bug
+			$_SERVER['DOCUMENT_ROOT']=str_replace($_SERVER['SCRIPT_NAME'],'',
+				$_SERVER['SCRIPT_FILENAME']);
+			apache_setenv("DOCUMENT_ROOT",$_SERVER['DOCUMENT_ROOT']);
+		}
 		// Default configuration
 		$this->hive=array(
 			'AGENT'=>isset($headers['X-Operamini-Phone-UA'])?
@@ -1540,7 +1535,7 @@ final class Base {
 			'SERIALIZER'=>extension_loaded($ext='igbinary')?$ext:'php',
 			'TEMP'=>'tmp/',
 			'TIME'=>microtime(TRUE),
-			'TZ'=>@date_default_timezone_get('date.timezone'),
+			'TZ'=>@date_default_timezone_get('date.timezone')?:'UTC',
 			'UI'=>'./',
 			'UNLOAD'=>NULL,
 			'UPLOADS'=>'./',
@@ -1566,26 +1561,38 @@ final class Base {
 			// Error detected
 			$this->error(500,sprintf(self::E_Fatal,$error['message']),
 				array($error));
+		date_default_timezone_set($this->hive['TZ']);
 		// Register framework autoloader
 		spl_autoload_register(array($this,'autoload'));
 		// Register shutdown handler
 		register_shutdown_function(array($this,'unload'));
 	}
 
+}
+
+//! Prefab for classes with constructors and static factory methods
+abstract class Prefab {
+
 	/**
-	*	Wrap-up
-	*	@return NULL
+	*	Return class instance
+	*	@return object
 	**/
-	function __destruct() {
-		Registry::clear(__CLASS__);
+	static function instance() {
+		if (!Registry::exists($class=get_called_class())) {
+			$ref=new Reflectionclass($class);
+			$args=func_get_args();
+			Registry::set($class,
+				$args?$ref->newinstanceargs($args):new $class);
+		}
+		return Registry::get($class);
 	}
 
 }
 
 //! Cache engine
-final class Cache {
+class Cache extends Prefab {
 
-	private
+	protected
 		//! Cache DSN
 		$dsn,
 		//! Prefix for cache entries
@@ -1607,6 +1614,7 @@ final class Cache {
 		$parts=explode('=',$this->dsn,2);
 		switch ($parts[0]) {
 			case 'apc':
+			case 'apcu':
 				$raw=apc_fetch($ndx);
 				break;
 			case 'memcache':
@@ -1623,8 +1631,8 @@ final class Cache {
 					$raw=$fw->read($file);
 				break;
 		}
-		if (isset($raw)) {
-			list($val,$time,$ttl)=$fw->unserialize($raw);
+		if (!empty($raw)) {
+			list($val,$time,$ttl)=(array)$fw->unserialize($raw);
 			if ($ttl===0 || $time+$ttl>microtime(TRUE))
 				return array($time,$ttl);
 			$this->clear($key);
@@ -1651,6 +1659,7 @@ final class Cache {
 		$parts=explode('=',$this->dsn,2);
 		switch ($parts[0]) {
 			case 'apc':
+			case 'apcu':
 				return apc_store($ndx,$data,$ttl);
 			case 'memcache':
 				return memcache_set($this->ref,$ndx,$data,0,$ttl);
@@ -1685,6 +1694,7 @@ final class Cache {
 		$parts=explode('=',$this->dsn,2);
 		switch ($parts[0]) {
 			case 'apc':
+			case 'apcu':
 				return apc_delete($ndx);
 			case 'memcache':
 				return memcache_delete($this->ref,$ndx);
@@ -1736,7 +1746,7 @@ final class Cache {
 				foreach ($info['ucache_entries'] as $item)
 					if (preg_match($regex,$item['key_name']) &&
 						$item['use_time']+$lifetime<time())
-					apc_delete($item['key_name']);
+					wincache_ucache_delete($item['key_name']);
 				return TRUE;
 			case 'xcache':
 				return TRUE; /* Not supported */
@@ -1757,8 +1767,8 @@ final class Cache {
 	*	@param $dsn bool|string
 	**/
 	function load($dsn) {
+		$fw=Base::instance();
 		if ($dsn=trim($dsn)) {
-			$fw=Base::instance();
 			if (preg_match('/^memcache=(.+)/',$dsn,$parts) &&
 				extension_loaded('memcache'))
 				foreach ($fw->split($parts[1]) as $server) {
@@ -1784,60 +1794,18 @@ final class Cache {
 				!is_dir($parts[1]))
 				mkdir($parts[1],Base::MODE,TRUE);
 		}
+		$this->prefix=$fw->hash($_SERVER['SERVER_NAME'].$fw->get('BASE'));
 		return $this->dsn=$dsn;
 	}
 
 	/**
-	*	Return class instance
+	*	Class constructor
 	*	@return object
+	*	@param $dsn bool|string
 	**/
-	static function instance() {
-		if (!Registry::exists($class=__CLASS__))
-			Registry::set($class,new $class);
-		return Registry::get($class);
-	}
-
-	//! Prohibit cloning
-	private function __clone() {
-	}
-
-	//! Prohibit instantiation
-	private function __construct() {
-		$fw=Base::instance();
-		$this->prefix=$fw->hash($fw->get('ROOT').$fw->get('BASE'));
-	}
-
-	/**
-	*	Wrap-up
-	*	@return NULL
-	**/
-	function __destruct() {
-		Registry::clear(__CLASS__);
-	}
-
-}
-
-//! Prefab for classes with constructors and static factory methods
-abstract class Prefab {
-
-	/**
-	*	Return class instance
-	*	@return object
-	**/
-	static function instance() {
-		if (!Registry::exists($class=get_called_class())) {
-			$ref=new Reflectionclass($class);
-			Registry::set($class,$ref->newinstanceargs(func_get_args()));
-		}
-		return Registry::get($class);
-	}
-
-	/**
-	*	Wrap-up
-	*	@return NULL
-	**/
-	function __destruct() {
-		Registry::clear(get_called_class());
+	function __construct($dsn=FALSE) {
+		if ($dsn)
+			$this->load($dsn);
 	}
 
 }
@@ -2303,11 +2271,12 @@ final class Registry {
 	}
 
 	/**
-	*	Remove object from catalog
+	*	Delete object from catalog
 	*	@return NULL
 	*	@param $key string
 	**/
 	static function clear($key) {
+		self::$table[$key]=NULL;
 		unset(self::$table[$key]);
 	}
 
