@@ -31,6 +31,7 @@ class SqlMapper extends \DB\SQL\Mapper
    */
   public function __set($key, $value)
   {
+    var_dump($this->properties);
     if (!array_key_exists($key, $this->properties))
       throw new FieldNotExistsException("$key does not exist.");
 
@@ -38,7 +39,7 @@ class SqlMapper extends \DB\SQL\Mapper
     $instance = new $class();
 
     if (!$instance->validate($value, $this->properties[$key]))
-      throw new FieldInvalidException("'$value' is not allowed for field '$key'");
+      throw new FieldInvalidException(print_r($value, true) . " is not allowed for field '$key'");
 
     parent::__set($key, $value);
   }

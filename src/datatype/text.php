@@ -8,7 +8,7 @@ class Text extends DataType
   {
     $valid = is_string($value); 
     $valid &= (!array_key_exists("maxlength", $options) ||
-               strlen($value) >= $options["maxlength"]);
+               strlen($value) <= $options["maxlength"]);
 
     return $valid;
   }
