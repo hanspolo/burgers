@@ -20,8 +20,6 @@ class Integer extends DataType
    */
   public function renderForm($name, $value = null, $error = false, $options = array())
   { 
-    var_dump($error);
-    var_dump($options);
     $f3 = \Base::instance();
 
     $form = "<label>";

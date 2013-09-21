@@ -31,7 +31,6 @@ class SqlMapper extends \DB\SQL\Mapper
    */
   public function __set($key, $value)
   {
-    var_dump($this->properties);
     if (!array_key_exists($key, $this->properties))
       throw new FieldNotExistsException("$key does not exist.");
 
