@@ -1,7 +1,7 @@
 <?php
 
 /*
-	Copyright (c) 2009-2013 F3::Factory/Bong Cosca, All rights reserved.
+	Copyright (c) 2009-2014 F3::Factory/Bong Cosca, All rights reserved.
 
 	This file is part of the Fat-Free Framework (http://fatfree.sf.net).
 
@@ -24,8 +24,28 @@ class Mongo extends \MongoDB {
 	//@}
 
 	private
+		//! UUID
+		$uuid,
+		//! Data source name
+		$dsn,
 		//! MongoDB log
 		$log;
+
+	/**
+	*	Return data source name
+	*	@return string
+	**/
+	function dsn() {
+		return $this->dsn;
+	}
+
+	/**
+	*	Return UUID
+	*	@return string
+	**/
+	function uuid() {
+		return $this->uuid;
+	}
 
 	/**
 	*	Return MongoDB profiler results
@@ -63,6 +83,7 @@ class Mongo extends \MongoDB {
 	*	@param $options array
 	**/
 	function __construct($dsn,$dbname,array $options=NULL) {
+		$this->uuid=\Base::instance()->hash($this->dsn=$dsn);
 		$class=class_exists('\MongoClient')?'\MongoClient':'\Mongo';
 		parent::__construct(new $class($dsn,$options?:array()),$dbname);
 		$this->setprofilinglevel(2);
