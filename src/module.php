@@ -3,8 +3,7 @@
 /**
  *  
  *
- *  @author Hanspolo <ph.hanspolo@googlemail.com>
- *  @copyright 2013 Hanspolo
+ *  @author Philipp Hirsch <itself@hanspolo.net>
  *  @license https://gnu.org/licenses/gpl.html GNU Public License
  *  @version 0.2
  */
@@ -50,6 +49,10 @@ class Module
 
 /**
  *
+ *
+ *  @author Philipp Hirsch <itself@hanspolo.net>
+ *  @license https://gnu.org/licenses/gpl.html GNU Public License
+ *  @version 0.2
  */
 abstract class AbstractModule
 {

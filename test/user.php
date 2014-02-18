@@ -5,7 +5,7 @@ $f3->set("AUTOLOAD", "../lib");
 
 $test = new Test;
 
-$user = new User(new DB\SQL("sqlite:/tmp/test.sqlite"));
+$user = User::createUser(new DB\SQL("sqlite:/tmp/test.sqlite"));
 
 $user->password = "abc";
 $test->expect($user->password != "abc", "Password is gonna be encrypted");

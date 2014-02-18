@@ -3,8 +3,7 @@
 /**
  *
  *
- *  @author Hanspolo <ph.hanspolo@googlemail.com>
- *  @copyright 2013 Hanspolo
+ *  @author Philipp Hirsch <itself@hanspolo.net>
  *  @license https://gnu.org/licenses/gpl.html GNU Public License
  *  @version 0.2
  */
@@ -16,9 +15,9 @@ class SqlMapper extends \DB\SQL\Mapper
   /**
    *  @see \DB\SQL\Mapper::__construct($db, $table, $ttl)
    */
-  public function __construct($db, $table, $ttl=60)
+  public function __construct($db, $table, $fields=null, $ttl=60)
   {
-    parent::__construct($db, $table, $ttl);
+    parent::__construct($db, $table, $fields, $ttl);
 
     $this->properties = array();
   }
