@@ -1,24 +1,31 @@
 <?php
 
 /**
+ *  Provides form generation and validation.
  *
- *  @author Hanspolo <ph.hanspolo@googlemail.com>
- *  @copyright 2013 Hanspolo
+ *  @author Philipp Hirsch <itself@hanspolo.net>
  *  @license https://gnu.org/licenses/gpl.html GNU Public License
  *  @version 0.2
  */
-
 class Form
 {
   private $object;
 
+  /**
+   * Construct
+   *
+   * @param SQLMapper $object
+   */
   public function __construct(&$object)
   {
     $this->object = $object;
   }
 
   /**
+   * Renders the form for each field of the object.
    *
+   * @return String
+   *   HTML-Output of the rendering process.
    */
   public function render()
   {
@@ -41,7 +48,7 @@ class Form
   }
 
   /**
-   *  
+   *  Validates data given as argument.
    *
    *  @param Array $data
    *    The Data send by the form
@@ -83,11 +90,13 @@ class Form
   }
 
   /**
-   *  
+   *  Saves the object to the database.
    *
    *  @param Array $data
    *    The Data send by the form
    *    In many cases this can be $_POST
+   *
+   *  @return Mixed
    */
   public function save($data)
   {
@@ -107,11 +116,13 @@ class Form
       $this->object->$name = $data[$name];
     }
 
-    $this->object->save();
+    return $this->object->save();
   }
 }
 
-
+/**
+ *  Specific Exception
+ */
 class FormInvalidException extends Exception
 {
   public function __construct(
