@@ -44,11 +44,12 @@ $form=new Form($instance);
 //
 // Render the form
 //
+$output = "";
+
 try {
-  echo $form->render();
-  echo "\n";
+  $output = $form->render();
 } catch (Exception $e) {
-  echo $e->getTraceAsString();
+  $output = $e->getTraceAsString();
 }
 
 //
@@ -90,3 +91,6 @@ foreach ($test->results() as $result) {
     echo 'Fail ('.$result['source'].')';
   echo "\n";
 }
+
+echo "\n\n=== And now the form output ===\n";
+echo $output;
