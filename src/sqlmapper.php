@@ -8,16 +8,16 @@
  *  @version 0.2
  */
 
-class SqlMapper extends \DB\SQL\Mapper
+class SqlMapper extends \DB\Cortex
 {
   protected $properties;
 
   /**
    *  @see \DB\SQL\Mapper::__construct($db, $table, $ttl)
    */
-  public function __construct($db, $table, $fields=null, $ttl=60)
+  public function __construct($db, $table, $fluid=null, $ttl=60)
   {
-    parent::__construct($db, $table, $fields, $ttl);
+    parent::__construct($db, $table, $fluid, $ttl);
 
     $this->properties = array();
   }

@@ -27,16 +27,16 @@ class User
 class DbUser extends SqlMapper
 {
   /**
-   *  @see SqlMapper::__construct($db, $table, $ttl)
+   *  @see SqlMapper::__construct($db, $table, $fluid, $ttl)
    */
-  function __construct($db, $table="Users", $ttl=60)
+  function __construct($db, $table="Users", $fluid=null, $ttl=60)
   {
     $f3 = \Base::instance();
     
     if ($f3->exists("LOGIN") && $f3->get("LOGIN") == "LDAP")
       return ;
 
-    parent::__construct($db, $table, $ttl);
+    parent::__construct($db, $table, $fluid, $ttl);
 
     $this->properties = array(
       "id" => array(
