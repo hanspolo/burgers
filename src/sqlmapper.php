@@ -45,7 +45,7 @@ class SqlMapper extends \DB\Cortex
   /**
    *  @see \DB\SQL\Mapper::__get($key)
    */
-  public function __get($key)
+  public function &__get($key)
   {
     if ($key === "properties")
       return $this->properties;
