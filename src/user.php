@@ -74,7 +74,7 @@ class DbUser extends SqlMapper
    *  @param String $email
    *  @param String $password
    *
-   *  @return Boolean
+   *  @return Mixed
    */
   public function checkLogin($login, $password)
   {
@@ -87,7 +87,14 @@ class DbUser extends SqlMapper
     if ($clone->dry())
       return false;
 
-    return Bcrypt::instance()->verify($password, $clone->password);
+    if (Bcrypt::instance()->verify($password, $clone->password))
+    {
+      return $clone;
+    }
+    else
+    {
+      return false;
+    }
   }
 
   /**
