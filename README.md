@@ -150,6 +150,78 @@ When the form is sent to the backend you will first validate it with `$form->val
 If it fails it returns `FALSE` and adds a description of the failures to `$f3->get("form_errors")`.
 If not you can use `$form->save($f3->get("POST"))` to put write it to the database.
 
+### Navbar Generator ###
+
+Built on top of the base [Burgers](https://github.com/hanspolo/burgers) classes, the navbar generator provides an easy way to generate [Bootstrap v3](http://getbootstrap.com/examples/navbar/) navbars with support for primary menu items and drop downs.
+
+![01-navbar](https://cloud.githubusercontent.com/assets/9042878/9215259/7aba9f4a-40eb-11e5-949d-58e979325731.jpg)
+
+**To use Navbars you will also need to ensure that you are using Burger's users and groups.  Navbars also requires an additional table containing the menu items.**
+
+```
+CREATE TABLE `menus` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `anchor` varchar(128) DEFAULT NULL,
+  `link` varchar(128) DEFAULT NULL,
+  `access_level` tinyint(1) DEFAULT '0',
+  `parent_id` int(11) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) 
+```
+
+The `access_level` specifies the minimum `groupId` required to access the menu item.  The `parent_id` is the id of the parent menu item if creating drop down menus.   A user with a groupId of 2 would see menu items with an `access_level` <= 2.
+
+For a menu item to be a top level menu item ensure it has been created with a `parent_id` of 0.
+
+**The table to use for the navbar needs to be set as a config item using the key `MENUTABLE`.  If you are using a `config.ini` this can be added in the file or using `$f3->set('MENUTABLE','menus')` before building or rendering the navbar**.
+
+The navbar generator also requires that the user record returned by the Burgers `\User::checkLogin` be available in the session as user.  ie. `SESSION.user`.
+
+The navbar generator will throw an Exception if needed information is not present.
+
+To display the navbar you should first build the menu items using:
+
+`\Nav::build()`
+
+once the nav bar has been built you can then display it using:
+
+`echo \Nav::render();`
+
+The `\Nav::render()` command supports a first parameter to specify the styling type.  If left blank the navbar will be output as plain old HTML lists.  If set to `bootstrap` the output will be styled with the bootstrap classes.
+
+For example to output using Bootstrap 3 you would use `echo \Nav::render('bootstrap')`.
+
+Currently only Bootstrap 3 is supported.  Other versions, or other frameworks (ie. Foundation) may be added based on requirements.
+
+`\Nav::render('bootstrap')` will only render the menu items themselves.  You will still need to provide the shell of the navbar as per the Bootstrap docs [http://getbootstrap.com/components/#navbar](http://getbootstrap.com/components/#navbar).
+
+```
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Brand</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="main-navbar-collapse-1">
+
+            <?php
+                \Nav::build();
+                echo \Nav::render('bootstrap');
+            ?>
+
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+```
+
 ## Support and License
 
 ### License
